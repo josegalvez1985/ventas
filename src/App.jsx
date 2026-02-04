@@ -17,7 +17,7 @@ function App() {
       try {
         const fechaAPI = formatearFecha(fecha) // convierte a DD/MM/YYYY
         const response = await fetch(`https://apex.oracle.com/pls/apex/josegalvez/ventas/articulos?P_EMPRESA=24&P_FECHA=${fechaAPI}`)
-        if (!response.ok) throw new Error('Error al obtener los artÃ­culos')
+        if (!response.ok) throw new Error('Error al obtener los artículos')
         const data = await response.json()
         setArticulos(data.items)
       } catch (err) {
