@@ -19,18 +19,26 @@ function Articulos({ empresa = '24' }) {
       setLoading(true);
       setError(null);
       try {
-        let url = `/api/articulos?p_cod_empresa=${empresa}`;
+        let url = `/api/articulos?P_COD_EMPRESA=${empresa}`;
         if (fecha) {
           const fechaFormato = formatearFecha(fecha);
-          url += `&p_fecha=${fechaFormato}`;
+          url += `&P_FECHA=${encodeURIComponent(fechaFormato)}`;
+          console.log('Fecha seleccionada:', fecha);
+          console.log('Fecha formato API (dd/mm/yyyy):', fechaFormato);
+        } else {
+          console.log('Sin filtro de fecha - mostrando todos los registros');
         }
-        console.log('Fetching from:', url);
+        console.log('URL completa:', url);
+        console.log('Parametro P_COD_EMPRESA:', empresa);
         const response = await fetch(url);
+        console.log('Response status:', response.status);
         if (!response.ok) throw new Error('Error al obtener los articulos');
         const data = await response.json();
         console.log('Data received:', data);
+        console.log('Cantidad de items:', data.items ? data.items.length : 0);
         setArticulos(data.items || []);
       } catch (err) {
+        console.error('Error en fetch:', err);
         setError(err.message);
         setLoading(false);
       } finally {
@@ -50,13 +58,18 @@ function Articulos({ empresa = '24' }) {
     color: 'white',
     fontSize: '12px',
     textAlign: 'left',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    whiteSpace: 'nowrap',
+    position: 'sticky',
+    top: 0,
+    zIndex: 10
   };
 
   const tdStyle = {
     border: '1px solid #ddd',
     padding: '8px',
-    fontSize: '12px'
+    fontSize: '12px',
+    whiteSpace: 'nowrap'
   };
 
   const tdNumberStyle = {
@@ -64,11 +77,42 @@ function Articulos({ empresa = '24' }) {
     textAlign: 'right'
   };
 
+  const containerStyle = {
+    padding: '10px',
+    maxWidth: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100vh'
+  };
+
+  const tableContainerStyle = {
+    flex: 1,
+    overflow: 'auto',
+    WebkitOverflowScrolling: 'touch'
+  };
+
+  const filterContainerStyle = {
+    marginBottom: '20px',
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '10px',
+    alignItems: 'center',
+    flexShrink: 0
+  };
+
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>Articulos ({articulos.length})</h2>
-      <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', alignItems: 'center' }}>
-        <label htmlFor="fechaInput" style={{ fontWeight: 'bold' }}>Seleccionar fecha:</label>
+    <div style={containerStyle}>
+      <h2 style={{ 
+        fontSize: 'clamp(18px, 5vw, 24px)', 
+        marginBottom: '15px',
+        flexShrink: 0
+      }}>
+        Articulos ({articulos.length})
+      </h2>
+      <div style={filterContainerStyle}>
+        <label htmlFor="fechaInput" style={{ fontWeight: 'bold', fontSize: '14px' }}>
+          Seleccionar fecha:
+        </label>
         <input
           id="fechaInput"
           type="date"
@@ -82,12 +126,14 @@ function Articulos({ empresa = '24' }) {
           }}
         />
       </div>
-      <div style={{ overflowX: 'auto' }}>
+      <div style={tableContainerStyle}>
         <table style={{ 
           width: '100%', 
+          minWidth: '800px',
           borderCollapse: 'collapse',
           backgroundColor: 'white',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+          fontSize: 'clamp(10px, 2vw, 12px)'
         }}>
           <thead>
             <tr>
@@ -114,14 +160,14 @@ function Articulos({ empresa = '24' }) {
                 <td style={tdNumberStyle}>{art.existencia}</td>
                 <td style={tdStyle}>{art.fec_comprobante}</td>
                 <td style={tdNumberStyle}>{art.cantidad}</td>
-                <td style={tdNumberStyle}>{art.costo_ultimo.toLocaleString('es-ES')}</td>
-                <td style={tdNumberStyle}>{art.total_costo.toLocaleString('es-ES')}</td>
-                <td style={tdNumberStyle}>{art.precio_lista.toLocaleString('es-ES')}</td>
-                <td style={tdNumberStyle}>{art.precio.toLocaleString('es-ES')}</td>
+                <td style={tdNumberStyle}>{Math.round(art.costo_ultimo).toLocaleString('es-ES')}</td>
+                <td style={tdNumberStyle}>{Math.round(art.total_costo).toLocaleString('es-ES')}</td>
+                <td style={tdNumberStyle}>{Math.round(art.precio_lista).toLocaleString('es-ES')}</td>
+                <td style={tdNumberStyle}>{Math.round(art.precio).toLocaleString('es-ES')}</td>
                 <td style={tdNumberStyle}>{art.por_descuento}%</td>
-                <td style={tdNumberStyle}>{art.diferencia.toLocaleString('es-ES')}</td>
-                <td style={tdNumberStyle}>{art.total.toLocaleString('es-ES')}</td>
-                <td style={tdNumberStyle}>{art.rentabilidad.toLocaleString('es-ES')}</td>
+                <td style={tdNumberStyle}>{Math.round(art.diferencia).toLocaleString('es-ES')}</td>
+                <td style={tdNumberStyle}>{Math.round(art.total).toLocaleString('es-ES')}</td>
+                <td style={tdNumberStyle}>{Math.round(art.rentabilidad).toLocaleString('es-ES')}</td>
                 <td style={tdNumberStyle}>{art.rentabilidad_porc.toFixed(2)}%</td>
                 <td style={tdStyle}>{art.nro_telefono || '-'}</td>
               </tr>
@@ -137,13 +183,13 @@ function Articulos({ empresa = '24' }) {
               <td style={{ ...tdNumberStyle, color: 'white', fontWeight: 'bold' }}></td>
               <td style={{ ...tdNumberStyle, color: 'white', fontWeight: 'bold' }}></td>
               <td style={{ ...tdNumberStyle, color: 'white', fontWeight: 'bold' }}>
-                {articulos.reduce((sum, art) => sum + art.diferencia, 0).toLocaleString('es-ES')}
+                {Math.round(articulos.reduce((sum, art) => sum + art.diferencia, 0)).toLocaleString('es-ES')}
               </td>
               <td style={{ ...tdNumberStyle, color: 'white', fontWeight: 'bold' }}>
-                {articulos.reduce((sum, art) => sum + art.total, 0).toLocaleString('es-ES')}
+                {Math.round(articulos.reduce((sum, art) => sum + art.total, 0)).toLocaleString('es-ES')}
               </td>
               <td style={{ ...tdNumberStyle, color: 'white', fontWeight: 'bold' }}>
-                {articulos.reduce((sum, art) => sum + art.rentabilidad, 0).toLocaleString('es-ES')}
+                {Math.round(articulos.reduce((sum, art) => sum + art.rentabilidad, 0)).toLocaleString('es-ES')}
               </td>
               <td style={{ ...tdNumberStyle, color: 'white', fontWeight: 'bold' }}>
               </td>
