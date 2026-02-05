@@ -19,7 +19,12 @@ function Articulos({ empresa = '24' }) {
       setLoading(true);
       setError(null);
       try {
-        let url = `/api/articulos?P_COD_EMPRESA=${empresa}`;
+        // Usar URL completa en producción
+        const baseUrl = import.meta.env.DEV 
+          ? '/api/articulos' 
+          : 'https://oracleapex.com/ords/josegalvez/ventas/articulos';
+        
+        let url = `${baseUrl}?P_COD_EMPRESA=${empresa}`;
         if (fecha) {
           const fechaFormato = formatearFecha(fecha);
           url += `&P_FECHA=${encodeURIComponent(fechaFormato)}`;
