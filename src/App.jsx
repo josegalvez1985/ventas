@@ -43,7 +43,12 @@ function App() {
       setLoading(true)
       setError(null)
       try {
-        const url = `/api/articulos`
+        // Detectar si estamos en producción (GitHub Pages) o desarrollo local
+        const isProduction = window.location.hostname.includes('github.io')
+        const url = isProduction
+          ? 'https://oracleapex.com/ords/josegalvez/ventas/articulos'
+          : '/api/articulos'
+        console.log('Environment:', isProduction ? 'Production' : 'Development')
         console.log('Fetching from:', url)
         const response = await fetch(url)
         console.log('Response status:', response.status)

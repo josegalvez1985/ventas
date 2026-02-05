@@ -19,10 +19,21 @@ function Articulos({ empresa = '24' }) {
       setLoading(true);
       setError(null);
       try {
+<<<<<<< HEAD
         // Usar URL completa en producción
         const baseUrl = import.meta.env.DEV 
           ? '/api/articulos' 
           : 'https://oracleapex.com/ords/josegalvez/ventas/articulos';
+=======
+        // Detectar si estamos en producción (GitHub Pages) o desarrollo local
+        const isProduction = window.location.hostname.includes('github.io');
+        const baseUrl = isProduction
+          ? 'https://oracleapex.com/ords/josegalvez/ventas/articulos'
+          : '/api/articulos';
+        
+        console.log('Environment:', isProduction ? 'Production' : 'Development');
+        console.log('Base URL:', baseUrl);
+>>>>>>> 4d70514d39e97fc1003b50141f60289e5ee4f3a6
         
         let url = `${baseUrl}?P_COD_EMPRESA=${empresa}`;
         if (fecha) {
@@ -162,18 +173,18 @@ function Articulos({ empresa = '24' }) {
             {articulos.map((art, index) => (
               <tr key={index} style={{ backgroundColor: index % 2 === 0 ? '#f9f9f9' : '#ffffff' }}>
                 <td style={tdStyle}>{art.descripcion}</td>
-                <td style={tdNumberStyle}>{art.existencia}</td>
+                <td style={tdNumberStyle}>{Number(art.existencia).toLocaleString('es-ES')}</td>
                 <td style={tdStyle}>{art.fec_comprobante}</td>
-                <td style={tdNumberStyle}>{art.cantidad}</td>
+                <td style={tdNumberStyle}>{Number(art.cantidad).toLocaleString('es-ES')}</td>
                 <td style={tdNumberStyle}>{Math.round(art.costo_ultimo).toLocaleString('es-ES')}</td>
                 <td style={tdNumberStyle}>{Math.round(art.total_costo).toLocaleString('es-ES')}</td>
                 <td style={tdNumberStyle}>{Math.round(art.precio_lista).toLocaleString('es-ES')}</td>
                 <td style={tdNumberStyle}>{Math.round(art.precio).toLocaleString('es-ES')}</td>
-                <td style={tdNumberStyle}>{art.por_descuento}%</td>
+                <td style={tdNumberStyle}>{Number(art.por_descuento).toLocaleString('es-ES')}%</td>
                 <td style={tdNumberStyle}>{Math.round(art.diferencia).toLocaleString('es-ES')}</td>
                 <td style={tdNumberStyle}>{Math.round(art.total).toLocaleString('es-ES')}</td>
                 <td style={tdNumberStyle}>{Math.round(art.rentabilidad).toLocaleString('es-ES')}</td>
-                <td style={tdNumberStyle}>{art.rentabilidad_porc.toFixed(2)}%</td>
+                <td style={tdNumberStyle}>{Number(art.rentabilidad_porc).toLocaleString('es-ES', {minimumFractionDigits: 2, maximumFractionDigits: 2})}%</td>
                 <td style={tdStyle}>{art.nro_telefono || '-'}</td>
               </tr>
             ))}
