@@ -19,7 +19,16 @@ function Articulos({ empresa = '24' }) {
       setLoading(true);
       setError(null);
       try {
-        let url = `/api/articulos?P_COD_EMPRESA=${empresa}`;
+        // Detectar si estamos en producción (GitHub Pages) o desarrollo local
+        const isProduction = window.location.hostname.includes('github.io');
+        const baseUrl = isProduction
+          ? 'https://oracleapex.com/ords/josegalvez/ventas/articulos'
+          : '/api/articulos';
+        
+        console.log('Environment:', isProduction ? 'Production' : 'Development');
+        console.log('Base URL:', baseUrl);
+        
+        let url = `${baseUrl}?P_COD_EMPRESA=${empresa}`;
         if (fecha) {
           const fechaFormato = formatearFecha(fecha);
           url += `&P_FECHA=${encodeURIComponent(fechaFormato)}`;
