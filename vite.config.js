@@ -4,6 +4,7 @@ import https from 'https'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/ventas/',
   plugins: [react()],
   server: {
     middlewareMode: false,
