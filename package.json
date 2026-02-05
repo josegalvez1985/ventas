@@ -9,12 +9,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-<<<<<<< HEAD
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
-=======
-    "deploy": "npm run build && gh-pages -d dist"
->>>>>>> 4d70514d39e97fc1003b50141f60289e5ee4f3a6
   },
   "dependencies": {
     "@capacitor/android": "^8.0.2",

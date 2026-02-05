@@ -19,21 +19,10 @@ function Articulos({ empresa = '24' }) {
       setLoading(true);
       setError(null);
       try {
-<<<<<<< HEAD
         // Usar URL completa en producción
         const baseUrl = import.meta.env.DEV 
           ? '/api/articulos' 
           : 'https://oracleapex.com/ords/josegalvez/ventas/articulos';
-=======
-        // Detectar si estamos en producción (GitHub Pages) o desarrollo local
-        const isProduction = window.location.hostname.includes('github.io');
-        const baseUrl = isProduction
-          ? 'https://oracleapex.com/ords/josegalvez/ventas/articulos'
-          : '/api/articulos';
-        
-        console.log('Environment:', isProduction ? 'Production' : 'Development');
-        console.log('Base URL:', baseUrl);
->>>>>>> 4d70514d39e97fc1003b50141f60289e5ee4f3a6
         
         let url = `${baseUrl}?P_COD_EMPRESA=${empresa}`;
         if (fecha) {
