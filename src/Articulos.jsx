@@ -166,18 +166,18 @@ function Articulos({ empresa = '24' }) {
             {articulos.map((art, index) => (
               <tr key={index} style={{ backgroundColor: index % 2 === 0 ? '#f9f9f9' : '#ffffff' }}>
                 <td style={tdStyle}>{art.descripcion}</td>
-                <td style={tdNumberStyle}>{art.existencia}</td>
+                <td style={tdNumberStyle}>{Number(art.existencia).toLocaleString('es-ES')}</td>
                 <td style={tdStyle}>{art.fec_comprobante}</td>
-                <td style={tdNumberStyle}>{art.cantidad}</td>
+                <td style={tdNumberStyle}>{Number(art.cantidad).toLocaleString('es-ES')}</td>
                 <td style={tdNumberStyle}>{Math.round(art.costo_ultimo).toLocaleString('es-ES')}</td>
                 <td style={tdNumberStyle}>{Math.round(art.total_costo).toLocaleString('es-ES')}</td>
                 <td style={tdNumberStyle}>{Math.round(art.precio_lista).toLocaleString('es-ES')}</td>
                 <td style={tdNumberStyle}>{Math.round(art.precio).toLocaleString('es-ES')}</td>
-                <td style={tdNumberStyle}>{art.por_descuento}%</td>
+                <td style={tdNumberStyle}>{Number(art.por_descuento).toLocaleString('es-ES')}%</td>
                 <td style={tdNumberStyle}>{Math.round(art.diferencia).toLocaleString('es-ES')}</td>
                 <td style={tdNumberStyle}>{Math.round(art.total).toLocaleString('es-ES')}</td>
                 <td style={tdNumberStyle}>{Math.round(art.rentabilidad).toLocaleString('es-ES')}</td>
-                <td style={tdNumberStyle}>{art.rentabilidad_porc.toFixed(2)}%</td>
+                <td style={tdNumberStyle}>{Number(art.rentabilidad_porc).toLocaleString('es-ES', {minimumFractionDigits: 2, maximumFractionDigits: 2})}%</td>
                 <td style={tdStyle}>{art.nro_telefono || '-'}</td>
               </tr>
             ))}
